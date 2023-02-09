@@ -9,5 +9,5 @@ async def root():
     return {"Hello": "World"}
 
 @router.get("/location")
-async def get_location_data(latitude: int, longitude: int, db: Session = Depends(db.get_db)): 
-    return integration.get_location_data(db, latitude, longitude)
+async def get_location_data(latitude: int, longitude: int): # remove db if not using db in integrations
+    return {"goddamn": await integration.get_location_data(latitude, longitude)}
