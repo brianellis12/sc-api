@@ -1,0 +1,5 @@
+fastapi
+pytest
+sqlalchemy
+pydantic[dotenv]
+uvicorn

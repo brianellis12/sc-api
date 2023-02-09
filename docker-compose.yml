@@ -1,0 +1,27 @@
+version: '3.11'
+
+services:
+  web:
+    build: 
+      context: ./src
+      dockerfile: Dockerfile
+    command: |
+      bash -c 'while !</dev/tcp/db5432; do sleep 1; done;
+      uvicorn app.main:app --reload --host 0.0.0.0'
+    volumes:
+      - './src:/app'
+    ports:
+      - 8008:8008
+    depends_on:
+      - db
+  
+  db:
+    image: postgres
+    ports: 
+      - 8001:5432
+    environment:
+      - PYTHONIOENCODING=utf-8
+      - PGDATA=/var/lib/postgresql/data/data_maps_data/
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=data_maps
