@@ -1,25 +1,23 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from database.db import database, User
+from database import db
+from app.location_data.routers import router as location_data_router 
 
+db.base.metadata.create_all(bind=db.engine)
 
-app = FastAPI(title="FastAPI, Docker, and Traefik")
+def seed_data():
+    session = db.localSession()
+    
 
+app = FastAPI()
 
-@app.get("/")
-async def read_root():
-    return await User.objects.all()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-
-@app.on_event("startup")
-async def startup():
-    if not database.is_connected:
-        await database.connect()
-    # create a dummy entry
-    await User.objects.get_or_create(email="test@test.com")
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    if database.is_connected:
-        await database.disconnect()
+app.include_router(location_data_router)

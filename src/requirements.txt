@@ -3,3 +3,13 @@ pytest
 sqlalchemy
 pydantic[dotenv]
 uvicorn
+databases
+typing
+requests
+faker
+pydantic
+asyncpg
+coverage
+psycopg2-binary
+pyjwt
+uuid
