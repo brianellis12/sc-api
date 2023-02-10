@@ -6,8 +6,8 @@ from app.location_data.routers import router as location_data_router
 
 db.base.metadata.create_all(bind=db.engine)
 
-def seed_data():
-    session = db.localSession()
+# def seed_data():
+#     session = db.localSession()   
     
 
 app = FastAPI()
