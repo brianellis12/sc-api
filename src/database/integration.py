@@ -12,12 +12,13 @@ class GeographicTypes:
     async def convert_coordinates(latitude: str, longitude: str):
         geo_params = {
             'y' : longitude,
-            'x': latitude,
+            'x': latitude, 
             'benchmark': '2020',
             'vintage': '2020',
             'format': 'json'
         }
-        geo_url = 'https://geocoding.geo.census.gov/geocoder/geographies/coordinates?'
+        geo_url = os.environ.get('GEOCODE_URL')
+        print(geo_url) 
         response = requests.get(geo_url, params=geo_params)
         result = response.json()
 
