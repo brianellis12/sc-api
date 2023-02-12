@@ -1,17 +1,34 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
+from alembic.config import Config
+from alembic import command
 
-URL = "postgresql://postgres:password@db:5432/data_maps"
-engine = create_engine(URL)
-
-localSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from app.config import get_settings
 
 base = declarative_base()
 
+def run_migrations():
+    alembic_cfg = Config("./alembic.ini")
+    engine = get_engine()
+    with engine.begin() as connection:
+        alembic_cfg.attributes["connection"] = connection
+        command.upgrade(alembic_cfg, "head")
+
+def get_engine():
+    settings = get_settings()
+    engine = create_engine(settings.db_connection_string)
+    return engine
+
+def create_session():
+    engine = get_engine()
+    session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    session = session_local()
+    return session
+
+
 def get_db():
-    session = localSession()
+    session = create_session()
     try:
         yield session
     finally:
