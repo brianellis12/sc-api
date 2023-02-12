@@ -17,21 +17,17 @@ def init_db():
     run_migrations()
     session = create_session()
 
-    # with open("geo_types.csv", 'r', encoding='utf-8-sig') as file:
-    #     dict_reader = DictReader(file)
-    #     geo_types = list(dict_reader)
+    with open("census_variables.csv", 'r', encoding='utf-8-sig') as file:
+        dict_reader = DictReader(file)
+        variable_objects = list(dict_reader)
     
-    # for geo_type in geo_types:
-    #     temp = GeographicTypesCreate(
-    #         geoid=geo_type['geoid'], longitude=geo_type['longitude'], latitude=geo_type['latitude']
-    #     )
-    #     crud.geographic_types.create(session, temp)
-
-    temp2 = CensusVariablesCreate(
-        name="new name", label="new label", concept="new concetps", group="dhfalkjhdgkajhglkjhdgakljdhflkj"
+    for object in variable_objects:
+          temp2 = CensusVariablesCreate(
+       name=object['name'], label=object['label'], concept=object['concept'], group=object['group']
     )
 
     crud.census_types.create(session, temp2)
+
 
 init_db()
 
