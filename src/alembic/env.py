@@ -13,7 +13,6 @@ from sqlalchemy import pool
 from app.config import get_settings
 from database.db import base
 
-import app.geographic_types.model
 import app.location_data.model
 
 # this is the Alembic Config object, which provides
