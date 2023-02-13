@@ -1,5 +1,7 @@
 import os
 import requests
+import database.crud as crud
+from sqlalchemy.orm import Session
 
 url = os.environ.get('CENSUS_URL')
 api_key = os.environ.get('CENSUS_KEY')
@@ -25,81 +27,30 @@ class GeographicTypes:
         if(result['result']['geographies'] == {}):
             return "Invalid Coordinates"
 
-        return result['result']['geographies']['Census Tracts'][0]['GEOID']
+        data = {'state': result['result']['geographies']['Census Tracts'][0]['STATE'],
+                'county': result['result']['geographies']['Census Tracts'][0]['COUNTY'],
+                'tract': result['result']['geographies']['Census Tracts'][0]['TRACT'] }
+        
+        return data 
  
-class CensusTypes: 
-    #General/Population
-    async def get_general_data(latitude: int, longitude: int):
-        params += '01%20county:001' 
-        params['for'] += '020500' 
-        params['get'] += 'NAME,S0101_C01_001E'
+class CensusTypes:    
+    async def get_census_data(db: Session, state: str, county: str, tract: str, section: str):
+        
+        data_points = crud.census_types.get_data_points(db, section)
+        variables = data_points['variables']
 
-    #Income
-    async def get_income_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
-
-    #Age
-    async def get_age_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'S0101_C01_030E,S0101_C01_028E,S0101_C01_023E,S0101_C01_025E,S0101_C01_019E' #Median Age, 65 and over, 15 - 45, 18 and over, 85 and over
+        params['in'] += state + '%20county' + county
+        params['for'] += tract
+        params['get'] += variables
 
         response = requests.get(url, headers=headers, params=params)
         
-        return response.content
-    #Sex
-    async def get_sex_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
+        result = response.json()
 
-    #Race
-    async def get_race_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
+        data = []
 
-    #Citizenship/Place of Birth
-    async def get_citizenship_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
+        i = 0
+        for variable in result[1]:
+            data.append({'label': data_points['labels'][i], 'variable': variable})
 
-    #Education
-    async def get_education_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
-
-    #Geographic mobility
-    async def get_mobility_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
-
-    #Transportation
-    async def get_transportation_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
-
-    #Employment
-    async def get_employment_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
-
-    #Household
-    async def get_household_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
-
-    #Religions
-    async def get_religion_data(latitude: int, longitude: int):
-        params['in'] += '01%20county:001'
-        params['for'] += '020500'
-        params['get'] += 'NAME,S0101_C01_002E,S0101_C01_013E'
-
+        return data 

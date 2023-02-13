@@ -6,5 +6,8 @@
         "pydantic",
         "sessionmaker",
         "sqlalchemy"
+    ],
+    "python.analysis.extraPaths": [
+        "./src"
     ]
 }

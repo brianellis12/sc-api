@@ -13,7 +13,7 @@ from sqlalchemy import pool
 from app.config import get_settings
 from database.db import base
 
-import app.location_data.model
+import app.census_data.model
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

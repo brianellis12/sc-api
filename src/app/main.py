@@ -4,12 +4,11 @@ from csv import DictReader
 
 import uvicorn
 
-from database import crud
+import database.crud as crud
 from database.db import create_session, run_migrations
 from app.geographic_types.routers import router as geographic_type_router
-from app.location_data.routers import router as location_data_router     
-from app.geographic_types.schema import GeographicTypesCreate
-from app.location_data.schema import CensusVariablesCreate
+from app.census_data.routers import router as census_data_router     
+from app.census_data.schema import CensusVariablesCreate
 
 app = FastAPI()
 
@@ -22,14 +21,12 @@ def init_db():
         variable_objects = list(dict_reader)
     
     for object in variable_objects:
-          temp2 = CensusVariablesCreate(
-       name=object['name'], label=object['label'], concept=object['concept'], group=object['group']
-    )
-
-    crud.census_types.create(session, temp2)
-
-
-init_db()
+        temp = CensusVariablesCreate(
+            name=object['name'], label=object['label'], concept=object['concept'], group=object['group']
+        )
+        crud.census_types.create(session, temp)
+    
+init_db() 
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,7 +36,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(location_data_router)
+app.include_router(census_data_router)
 app.include_router(geographic_type_router)
 
 if __name__ == "__main__":
