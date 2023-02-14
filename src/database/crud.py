@@ -21,7 +21,7 @@ class CensusTypes:
             .filter(census_model.CensusVariables.group.like(group_str))
             .distinct() 
             .all()
-        ) 
+        )
         
         return sections
 

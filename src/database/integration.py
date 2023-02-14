@@ -41,28 +41,23 @@ class CensusTypes:
         variables = data_points['variables']
         labels = data_points['labels']
 
-        # more processing to be done cleaning up labels def clean_label()
+        variables_string = ''.join([str(variable) + ',' for variable in variables])[:-1]
 
+        # more processing to be done cleaning up labels def clean_label()
+     
         # Census Variables URL Content
         url = os.environ.get('CENSUS_URL')
         api_key = os.environ.get('CENSUS_KEY')
         headers = {'api-key': api_key}
         params = {'in': 'state:' + state + '%20county:' + county,
                     'for': 'tract:' + tract,
-                    'get': 'B01001_001E'}
+                    'get': variables_string}
 
-        print(params)
+        # Get response
+        response = requests.get(url, headers=headers, params=params)        
+        result = response.json()
 
-        response = requests.get(url, headers=headers, params=params)
-        
-        result = response.request
+        # Format statistics from response with labels
+        data = [{'label': labels[i], 'statistic': statistic} for i, statistic in enumerate(result[1][:-3])]
 
-
-        # data = []
-
-        # i = 0
-        # for statistic in result[1]:
-        #     data.append({'label': labels[i], 'statistic': statistic})
-
-
-        return result
+        return data
