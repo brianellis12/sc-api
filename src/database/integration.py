@@ -3,15 +3,12 @@ import requests
 import database.crud as crud
 from sqlalchemy.orm import Session
 
-url = os.environ.get('CENSUS_URL')
-api_key = os.environ.get('CENSUS_KEY')
-headers = {'api-key': api_key}
-params = {'in': 'state:',
-            'for': 'tract:',
-            'get': ''}
-
 class GeographicTypes:
+
+    # Query the Census Bureau GeoCode API to convert inputted coordinates to required Geographic Types
     async def convert_coordinates(latitude: str, longitude: str):
+        
+        # GeoCode URL Content 
         geo_params = {
             'y' : longitude,
             'x': latitude, 
@@ -20,10 +17,11 @@ class GeographicTypes:
             'format': 'json'
         }
         geo_url = os.environ.get('GEOCODE_URL')
-        print(geo_url) 
+   
         response = requests.get(geo_url, params=geo_params)
         result = response.json()
 
+        # Check if inputted Coordinates are valid and inside of the Untied States
         if(result['result']['geographies'] == {}):
             return "Invalid Coordinates"
 
@@ -31,26 +29,40 @@ class GeographicTypes:
                 'county': result['result']['geographies']['Census Tracts'][0]['COUNTY'],
                 'tract': result['result']['geographies']['Census Tracts'][0]['TRACT'] }
         
-        return data 
+        return data
  
-class CensusTypes:    
+class CensusTypes:  
+
+    # Retrieve the Necessary Variables and Labels from the database
+    # Query the Census Bureau API for the Statistics of the retrieved variables 
     async def get_census_data(db: Session, state: str, county: str, tract: str, section: str):
         
-        data_points = crud.census_types.get_data_points(db, section)
+        data_points = crud.CensusTypes.get_data_points(db, section)
         variables = data_points['variables']
+        labels = data_points['labels']
 
-        params['in'] += state + '%20county' + county
-        params['for'] += tract
-        params['get'] += variables
+        # more processing to be done cleaning up labels def clean_label()
+
+        # Census Variables URL Content
+        url = os.environ.get('CENSUS_URL')
+        api_key = os.environ.get('CENSUS_KEY')
+        headers = {'api-key': api_key}
+        params = {'in': 'state:' + state + '%20county:' + county,
+                    'for': 'tract:' + tract,
+                    'get': 'B01001_001E'}
+
+        print(params)
 
         response = requests.get(url, headers=headers, params=params)
         
-        result = response.json()
+        result = response.request
 
-        data = []
 
-        i = 0
-        for variable in result[1]:
-            data.append({'label': data_points['labels'][i], 'variable': variable})
+        # data = []
 
-        return data 
+        # i = 0
+        # for statistic in result[1]:
+        #     data.append({'label': labels[i], 'statistic': statistic})
+
+
+        return result

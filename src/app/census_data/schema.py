@@ -3,9 +3,9 @@ from typing import Optional
 from enum import Enum
 
 class CensusVariablesBase(BaseModel):
-    name: Optional[str]
+    variable: Optional[str]
     label: Optional[str]
-    concept: Optional[str]
+    section: Optional[str]
     group: Optional[str]
     
 class CensusVariablesCreate(CensusVariablesBase):

@@ -1,61 +1,50 @@
 from sqlalchemy.orm import Session
-from app.geographic_types import model as geotype_model
-from app.geographic_types import schema as geotype_schema
 from app.census_data import model as census_model
 from app.census_data import schema as census_schema
 
-class geographic_types:
-    @staticmethod
-    def get(db: Session, longitude: any, latitude: any):
-        geoid = ( 
-            db.query(geotype_model.GeographicTypes)
-            .filter(geotype_model.GeographicTypes.latitude == latitude)
-            .filter(geotype_model.GeographicTypes.longitude == longitude)
-            .first()            
-        )
-        return geoid
+class CensusTypes:
 
+    # Get Some Rows of the Census Variables table to verify if the database is populated
     @staticmethod
-    def create(db: Session, geo_types: geotype_schema.GeographicTypesCreate):
-        geo_type_model = geotype_model.GeographicTypes(**geo_types.dict())
-        db.add(geo_type_model)
-        db.commit()
-        db.refresh(geo_type_model)
-        return geo_type_model 
+    def get_all(db: Session):
+        return db.query(census_model.CensusVariables).offset(0).limit(20).all()
 
-class census_types:
+    # Return the sections of the inputted group 
     @staticmethod
     def get_sections(db: Session, group: str):
-        group_id = census_schema.CensusGroups.TRANSPORTATION
-        sections = ( 
-            db.query(census_model.CensusVariables.concept)
-            .filter(census_model.CensusVariables.group == 'B23009')
-            .distinct()
+        group_id = census_schema.CensusGroups[group].value
+        
+        group_str = str(group_id) + '%'
+
+        sections = (  
+            db.query(census_model.CensusVariables.section)
+            .filter(census_model.CensusVariables.group.like(group_str))
+            .distinct() 
             .all()
-        )
-        print(sections)
+        ) 
+        
         return sections
-    
+
+    # Get the variable and labels for the inputted section
     @staticmethod
     def get_data_points(db: Session, section: str):
-
-        result = ( 
-            db.query(census_model.CensusVariables.label, census_model.CensusVariables.name)
-            .filter(census_model.CensusVariables.concept == section)
+        query_result = ( 
+            db.query(census_model.CensusVariables.label, census_model.CensusVariables.variable)
+            .filter(census_model.CensusVariables.section == section) 
             .all()
         )
 
-        data_points = {
-            'labels': [],
-            'variables': []
-        }
-        for row in result:
-            data_points['labels'].append(row[0])
-            data_points['variables'].append(row[1])
+        # Format Result
+        result = {'labels': [],
+        'variables': []}
 
-        print(data_points)
-        return data_points
+        for row in query_result:
+            result['labels'].append(row['label'])
+            result['variables'].append(row['variable'])
 
+        return result
+
+    # Add census variables to the database
     @staticmethod
     def create(db: Session, census_variables: census_schema.CensusVariablesCreate):
         census_variables_model = census_model.CensusVariables(**census_variables.dict())

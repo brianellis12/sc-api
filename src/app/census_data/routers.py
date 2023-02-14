@@ -10,8 +10,8 @@ async def root():
 
 @router.get("/location/sections")
 def get_group_sections(group: str, db: Session = Depends(db.get_db)):
-    return {crud.census_types.get_sections(db, group)}
+    return crud.CensusTypes.get_sections(db, group)
 
 @router.get("/location/data")
-async def get_age_data(state: str, county: str, tract: str, section: str, db: Session = Depends(db.get_db)):
-    return {await integration.CensusTypes.get_census_data(db, state, county, tract, section)}
+async def get_census_data(state: str, county: str, tract: str, section: str, db: Session = Depends(db.get_db)):
+    return await integration.CensusTypes.get_census_data(db, state, county, tract, section)

@@ -40,6 +40,7 @@ def get_url():
     settings = get_settings()
     return settings.db_connection_string
 
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
@@ -96,6 +97,7 @@ def run_migrations_online():
         
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

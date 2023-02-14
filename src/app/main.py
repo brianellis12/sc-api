@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from csv import DictReader
-
-import uvicorn
+import csv
 
 import database.crud as crud
 from database.db import create_session, run_migrations
@@ -12,20 +10,27 @@ from app.census_data.schema import CensusVariablesCreate
 
 app = FastAPI()
 
+# Builds the database
 def init_db():
     run_migrations()
     session = create_session()
 
-    with open("census_variables.csv", 'r', encoding='utf-8-sig') as file:
-        dict_reader = DictReader(file)
-        variable_objects = list(dict_reader)
-    
-    for object in variable_objects:
-        temp = CensusVariablesCreate(
-            name=object['name'], label=object['label'], concept=object['concept'], group=object['group']
-        )
-        crud.census_types.create(session, temp)
-    
+    existing_rows = crud.CensusTypes.get_all(session)
+
+    # Checks if the database is already populated
+    if len(existing_rows) > 0:
+        return 
+
+    # Adds the csv file with census variables to the database
+    with open('census_variables.csv', 'rt') as f:
+        csv_reader = csv.reader(f)
+
+        for line in csv_reader:
+            temp = CensusVariablesCreate(
+                variable=line[0], label=line[1], section=line[2], group=line[3]
+            )
+            crud.CensusTypes.create(session, temp)
+
 init_db() 
 
 app.add_middleware(
@@ -37,7 +42,4 @@ app.add_middleware(
 )
 
 app.include_router(census_data_router)
-app.include_router(geographic_type_router)
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+app.include_router(geographic_type_router) 
