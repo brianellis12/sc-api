@@ -15,9 +15,8 @@ def init_db():
     run_migrations()
     session = create_session()
 
-    existing_rows = crud.CensusTypes.get_all(session)
-
     # Checks if the database is already populated
+    existing_rows = crud.CensusTypes.get_all(session)
     if len(existing_rows) > 0:
         return 
 

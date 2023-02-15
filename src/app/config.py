@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pydantic import BaseSettings
 
-
+# Configuration for the REST API
 class Settings(BaseSettings):
     db_connection_string: str
 

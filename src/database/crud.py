@@ -12,13 +12,9 @@ class CensusTypes:
     # Return the sections of the inputted group 
     @staticmethod
     def get_sections(db: Session, group: str):
-        group_id = census_schema.CensusGroups[group].value
-        
-        group_str = str(group_id) + '%'
-
         sections = (  
             db.query(census_model.CensusVariables.section)
-            .filter(census_model.CensusVariables.group.like(group_str))
+            .filter(census_model.CensusVariables.group.like(group + '%'))
             .distinct() 
             .all()
         )
