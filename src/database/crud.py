@@ -19,7 +19,8 @@ class CensusTypes:
             .all()
         )
         
-        return sections
+        result = [pair['section'] for pair in sections]
+        return result
 
     # Get the variable and labels for the inputted section
     @staticmethod

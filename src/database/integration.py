@@ -58,6 +58,6 @@ class CensusTypes:
         result = response.json()
 
         # Format statistics from response with labels
-        data = [{'label': labels[i], 'statistic': statistic} for i, statistic in enumerate(result[1][:-3])]
+        data = [labels[i] + ': ' + statistic for i, statistic in enumerate(result[1][:-3])]
 
-        return data
+        return data 
