@@ -1,6 +1,38 @@
 from sqlalchemy.orm import Session
 from app.census_data import model as census_model
 from app.census_data import schema as census_schema
+from app.user import model as user_model
+from app.user import schema as user_schema
+
+class user:
+    @staticmethod
+    def get(db: Session, id: int):
+        db_user = db.query(user_model.User).filter(user_model.User.id == id).first()
+        if db_user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        return db_user
+
+    @staticmethod
+    def get_all(db: Session, skip: int = 0, limit: int = 100):
+        return db.query(user_model.User).offset(skip).limit(limit).all()
+
+    @staticmethod
+    def create(db: Session, user: user_schema.UserCreate):
+        db_user = user_model.User(**user.dict())
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+
+    @staticmethod
+    def update(db: Session, id: int, updated_user: user_schema.UserCreate):
+        db_user = user.get(db, id)
+        db_user.first_name = updated_user.first_name
+        db_user.last_name = updated_user.last_name
+        db_user.practice_area = updated_user.practice_area
+        db.commit()
+        db.refresh(db_user)
+        return db_user
 
 class CensusTypes:
 
