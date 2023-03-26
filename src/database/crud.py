@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.census_data import model as census_model
 from app.census_data import schema as census_schema

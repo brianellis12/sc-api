@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import csv
+from app.user.schema import UserCreate
 
 import database.crud as crud
 from database.db import create_session, run_migrations
@@ -30,6 +31,8 @@ def init_db():
             )
             crud.CensusTypes.create(session, temp)
 
+    user = UserCreate(first_name="Brian",last_name="Ellis",email="ellisbxn@gmail.com")
+    crud.user.create(session, user)
 init_db() 
 
 app.add_middleware(
