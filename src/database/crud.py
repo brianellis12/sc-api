@@ -15,6 +15,7 @@ class user:
 
     @staticmethod
     def get_all(db: Session, skip: int = 0, limit: int = 100):
+        print("here")
         return db.query(user_model.User).offset(skip).limit(limit).all()
 
     @staticmethod
@@ -27,12 +28,12 @@ class user:
 
     @staticmethod
     def update(db: Session, id: int, updated_user: user_schema.UserCreate):
-        db_user = user.get(db, id)
+        db_user = user.get(db, id) 
         db_user.first_name = updated_user.first_name
         db_user.last_name = updated_user.last_name
         db_user.practice_area = updated_user.practice_area
         db.commit()
-        db.refresh(db_user)
+        db.refresh(db_user) 
         return db_user
 
 class CensusTypes:

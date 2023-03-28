@@ -8,6 +8,9 @@ from database.db import create_session, run_migrations
 from app.geographic_types.routers import router as geographic_type_router
 from app.census_data.routers import router as census_data_router     
 from app.census_data.schema import CensusVariablesCreate
+from app.user.routers import public as public_user_router, authenticated as authenticated_user_router
+from app.auth.routers import router as auth_router
+
 
 app = FastAPI()
 
@@ -32,6 +35,7 @@ def init_db():
             crud.CensusTypes.create(session, temp)
 
     user = UserCreate(first_name="Brian",last_name="Ellis",email="ellisbxn@gmail.com")
+    print(user)
     crud.user.create(session, user)
 init_db() 
 
@@ -45,3 +49,6 @@ app.add_middleware(
 
 app.include_router(census_data_router)
 app.include_router(geographic_type_router) 
+app.include_router(public_user_router)
+app.include_router(authenticated_user_router)
+app.include_router(auth_router)

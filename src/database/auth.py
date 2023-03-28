@@ -16,9 +16,9 @@ class auth:
         encoded_jwt = jwt.encode(data, settings.token_key)
         return encoded_jwt
 
-    @staticmethod
+    @staticmethod 
     def authenticate(
-        db: Session,
+        db: Session, 
         request: schema.AuthenticateRequest,
         settings: Settings,
     ):
@@ -29,28 +29,29 @@ class auth:
             settings.oauth_android_client_id,
             settings.oauth_web_client_id,
         ]
-
-        idinfo = id_token.verify_oauth2_token(request.token, requests.Request())
+        print(requests.Request())
+        print(request.token)
+        idinfo = id_token.verify_oauth2_token(request.token, requests.Request()) 
 
         first_name = ""
-        last_name = ""
+        last_name = "" 
 
         if not all(key in idinfo for key in ["given_name", "family_name"]):
             if request.first_name and request.last_name:
                 first_name = request.first_name
                 last_name = request.last_name
         else:
-            first_name = idinfo["given_name"]
+            first_name = idinfo["given_name"] 
             last_name = idinfo["family_name"]
-
-        if not first_name or not last_name:
+    
+        if not first_name or not last_name: 
             return schema.AuthenticateResponse(incomplete_token=True)
 
         if idinfo["aud"] not in valid_client_ids:
             raise HTTPException(status_code=401, detail="Invalid token")
-
+     
         has_email = len(idinfo["email"]) > 0 and idinfo["email_verified"]
-        if not has_email:
+        if not has_email: 
             raise HTTPException(
                 status_code=400, detail="Token has missing/invalid email"
             )

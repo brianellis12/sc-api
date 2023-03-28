@@ -14,6 +14,7 @@ from app.config import get_settings
 from database.db import base
 
 import app.census_data.model
+import app.user.model
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

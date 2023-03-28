@@ -6,7 +6,7 @@ import pytest
 
 from app.auth.routers import get_authenticated_user
 from app.user import routers as user_routers
-from database import crud, db, views
+from database import crud, db
 
 
 @pytest.fixture
@@ -49,35 +49,11 @@ def fake_response_users(fake, fake_request_users):
         response_user.update(
             {
                 "id": fake.pyint(),
-                "practice_area": fake.word(),
-                "is_admin": fake.pybool(),
             }
         )
         response_users.append(response_user)
 
     return response_users
-
-
-@pytest.fixture
-def fake_aspects(fake):
-    response_aspects = []
-    for i in range(5):
-        response_aspects.append(
-            {
-                "id": fake.pyint(),
-                "title": fake.sentence(nb_words=5),
-                "description": fake.sentence(nb_words=12),
-                "timestamp": fake.date_time().strftime("%Y-%m-%dT%H:%M:%S"),
-                "emoji": fake.word(),
-                "type": fake.pyint(min_value=0, max_value=2),
-                "is_active": True,
-                "is_deleted": False,
-                "closed_reason": fake.word(),
-                "user_id": fake.pyint(),
-            }
-        )
-
-    return response_aspects
 
 
 def test_root(test_app):
@@ -89,8 +65,7 @@ def test_root(test_app):
 def test_add_user(test_app, fake_request_users, fake_response_users, monkeypatch):
     request_payload = fake_request_users[0]
     response_payload = fake_response_users[0]
-    response_payload["is_admin"] = False
-
+    
     def mock_create_user(*args, **kwargs):
         return response_payload
 
@@ -120,7 +95,7 @@ def test_get_user(test_app, fake_response_users, monkeypatch):
 
     monkeypatch.setattr(crud.user, "get", staticmethod(mock_get_user))
 
-    response = test_app.get("/users/2")
+    response = test_app.get("/users/1")
     assert response.status_code == 200
     assert response.json() == response_payload
 
@@ -139,20 +114,3 @@ def test_update_user(test_app, fake_request_users, fake_response_users, monkeypa
     assert response.json() == response_payload
 
 
-def test_get_profile(test_app, fake_response_users, fake_aspects, monkeypatch):
-    profile_response_payload = {
-        "user": fake_response_users[1],
-        "active_hearts": fake_aspects[:2],
-        "active_trees": [fake_aspects[2]],
-        "active_stars": fake_aspects[3:],
-        "latest_checkin": None,
-    }
-
-    def mock_get_profile(*args, **kwargs):
-        return profile_response_payload
-
-    monkeypatch.setattr(views.profile, "get", mock_get_profile)
-
-    response = test_app.get("/users/2/profile")
-    assert response.status_code == 200
-    assert response.json() == profile_response_payload

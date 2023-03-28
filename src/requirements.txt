@@ -18,3 +18,4 @@ pandas
 alembic
 httpx
 firebase_admin
+pg8000

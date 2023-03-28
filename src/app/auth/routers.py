@@ -32,9 +32,7 @@ async def authenticate(
         auth_request,
         settings,
     )
-
-
-# TODO: Remove this later
+ 
 @router.get("/auth/spoof/{user_id}")
 async def spoof_user(
     user_id: int,
@@ -42,9 +40,8 @@ async def spoof_user(
     settings: Settings = Depends(get_settings),
 ):
     db_user = session.query(model.User).filter(model.User.id == user_id).first()
-
-    access_token_data: dict = {
-        "sub": db_user.id,
+    access_token_data: dict = { 
+        "sub": db_user.id, 
         "user_id": db_user.id,
         "first_name": db_user.first_name,
         "last_name": db_user.last_name,
