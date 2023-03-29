@@ -3,7 +3,7 @@ from fastapi import HTTPException
 import jwt
 from sqlalchemy.orm import Session
 
-from app.auth import schema
+from app.authentication import schema
 from app.config import Settings
 from app.user import model
 from google.oauth2 import id_token

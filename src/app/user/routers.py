@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.auth.routers import get_authenticated_user
+from app.authentication.routers import get_authenticated_user
 
 from .schema import User, UserCreate
 from typing import List
@@ -10,7 +10,7 @@ from database import crud, db
 public = APIRouter()
 authenticated = APIRouter(dependencies=[Depends(get_authenticated_user)])
 
-
+# Basic Endpoint for testing
 @public.get("/")
 async def root():
     return {"Hello": "World"}

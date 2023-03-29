@@ -1,13 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import db, integration, crud
+from app.authentication.routers import get_authenticated_user
 
-router = APIRouter()
-
-# Basic Endpoint for testing
-@router.get("/")
-async def root():
-    return {"Hello": "World"}
+router = APIRouter(dependencies=[Depends(get_authenticated_user)])
 
 # Retrieve all of the sections for the inputted group
 @router.get("/location/sections")

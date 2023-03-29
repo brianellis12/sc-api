@@ -1,8 +1,9 @@
 from functools import lru_cache
 from pydantic import BaseSettings
 
-# Configuration for the REST API
-
+"""
+Configuration for the REST API
+"""
 class Settings(BaseSettings):
     token_key: str
     oauth_web_client_id: str

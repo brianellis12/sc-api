@@ -4,9 +4,9 @@ from fastapi.testclient import TestClient
 import jwt
 import pytest
 
-from app.auth import routers as auth_routers
+from app.authentication import routers as auth_routers
 from app.config import Settings, get_settings
-from database import auth, db
+from database import authentication, db
 
 
 def get_fake_settings():
@@ -57,7 +57,7 @@ def test_authenticate(test_app, fake_auth_request, fake_auth_response, monkeypat
     def mock_authenticate(*args, **kwargs):
         return fake_auth_response
 
-    monkeypatch.setattr(auth.auth, "authenticate", mock_authenticate)
+    monkeypatch.setattr(authentication.auth, "authenticate", mock_authenticate)
 
     response = test_app.post("/auth/authenticate", json=fake_auth_request)
     assert response.status_code == 200
@@ -75,5 +75,5 @@ def test_create_access_token(fake):
     settings = get_fake_settings()
     encoded_jwt = jwt.encode(access_token_data, settings.token_key)
 
-    token = auth.auth.create_access_token(access_token_data, settings)
+    token = authentication.auth.create_access_token(access_token_data, settings)
     assert token == encoded_jwt

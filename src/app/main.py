@@ -9,7 +9,7 @@ from app.geographic_types.routers import router as geographic_type_router
 from app.census_data.routers import router as census_data_router     
 from app.census_data.schema import CensusVariablesCreate
 from app.user.routers import public as public_user_router, authenticated as authenticated_user_router
-from app.auth.routers import router as auth_router
+from app.authentication.routers import router as auth_router
 
 
 app = FastAPI()

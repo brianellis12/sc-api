@@ -1,15 +1,18 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 import pytest
+from app.authentication.routers import get_authenticated_user
 
 from app.geographic_types.routers import router
 from fastapi.testclient import TestClient
+from database import db
 
 # Create a new client for the test
 @pytest.fixture
 def test_client():
     app = FastAPI()
     app.include_router(router)
+    app.dependency_overrides[get_authenticated_user] = lambda: None
     yield TestClient(app)
 
 # Test that the Get Geoid endpoint works as expected

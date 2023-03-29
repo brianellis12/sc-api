@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.config import Settings, get_settings
 from app.user import model
 from .schema import AuthenticateRequest
-from database import auth, db
+from database import authentication, db
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ async def authenticate(
     session: Session = Depends(db.get_db),
     settings: Settings = Depends(get_settings),
 ):
-    return auth.auth.authenticate(
+    return authentication.auth.authenticate(
         session,
         auth_request,
         settings,
@@ -46,4 +46,4 @@ async def spoof_user(
         "first_name": db_user.first_name,
         "last_name": db_user.last_name,
     }
-    return auth.auth.create_access_token(access_token_data, settings)
+    return authentication.auth.create_access_token(access_token_data, settings)

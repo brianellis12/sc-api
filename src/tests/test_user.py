@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 import pytest
 
-from app.auth.routers import get_authenticated_user
+from app.authentication.routers import get_authenticated_user
 from app.user import routers as user_routers
 from database import crud, db
 
