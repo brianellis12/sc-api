@@ -8,7 +8,9 @@ from app.authentication import routers as auth_routers
 from app.config import Settings, get_settings
 from database import authentication, db
 
-
+"""
+Create a new client for the tests
+"""
 def get_fake_settings():
     return Settings(
         token_key="fakeKey",
@@ -20,7 +22,9 @@ def get_fake_settings():
         environment="fakeEnvironment",
     )
 
-
+"""
+Create a new client for the tests
+"""
 @pytest.fixture
 def test_app():
     app = FastAPI()
@@ -29,19 +33,25 @@ def test_app():
     app.dependency_overrides[db.get_db] = lambda: None
     yield TestClient(app)
 
-
+"""
+Faker instance
+"""
 @pytest.fixture
 def fake():
     return Faker()
 
-
+"""
+Fake authentication request
+"""
 @pytest.fixture
 def fake_auth_request(fake):
     return {
         "token": fake.word(),
     }
 
-
+"""
+Fake authentication response
+"""
 @pytest.fixture
 def fake_auth_response(fake):
     user = {
@@ -52,7 +62,9 @@ def fake_auth_response(fake):
     }
     return {"access_token": fake.word(), "user": user, "new_user": fake.pybool()}
 
-
+"""
+Test authenticating logged in user
+"""
 def test_authenticate(test_app, fake_auth_request, fake_auth_response, monkeypatch):
     def mock_authenticate(*args, **kwargs):
         return fake_auth_response
@@ -63,7 +75,9 @@ def test_authenticate(test_app, fake_auth_request, fake_auth_response, monkeypat
     assert response.status_code == 200
     assert response.json() == fake_auth_response
 
-
+"""
+Tests creating a new access token for a new user
+"""
 def test_create_access_token(fake):
     user_id = fake.pyint()
     access_token_data: dict = {

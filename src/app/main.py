@@ -14,7 +14,9 @@ from app.authentication.routers import router as auth_router
 
 app = FastAPI()
 
-# Builds the database
+"""
+Builds the database
+"""
 def init_db():
     run_migrations()
     session = create_session()
@@ -34,8 +36,8 @@ def init_db():
             )
             crud.CensusTypes.create(session, temp)
 
+    # Adds test user
     user = UserCreate(first_name="Brian",last_name="Ellis",email="ellisbxn@gmail.com")
-    print(user)
     crud.user.create(session, user)
 init_db() 
 

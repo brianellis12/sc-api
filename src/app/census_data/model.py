@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Text, Integer
 from database.db import base
 
-# Model for the Census Variables table
+"""
+Model for the Census Variables table
+"""
 class CensusVariables(base):
 
     __tablename__ = "census_variables"

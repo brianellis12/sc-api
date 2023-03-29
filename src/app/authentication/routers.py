@@ -12,7 +12,9 @@ router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
+"""
+Get user to validate authentication
+"""
 async def get_authenticated_user(token=Depends(oauth2_scheme)):
     try:
         user = jwt.decode(token, key="myKey", algorithms=["HS256"])
@@ -20,7 +22,9 @@ async def get_authenticated_user(token=Depends(oauth2_scheme)):
     except jwt.DecodeError:
         raise HTTPException(403, "Invalid token")
 
-
+"""
+Authenticate user logged in in the front end
+"""
 @router.post("/auth/authenticate")
 async def authenticate(
     auth_request: AuthenticateRequest,
@@ -32,7 +36,10 @@ async def authenticate(
         auth_request,
         settings,
     )
- 
+
+"""
+For testing. Get user's temporary token 
+""" 
 @router.get("/auth/spoof/{user_id}")
 async def spoof_user(
     user_id: int,

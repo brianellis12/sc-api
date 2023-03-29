@@ -9,13 +9,22 @@ from app.user import model
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
-
+"""
+Handles authentication functions
+"""
 class auth:
+    
+    """
+    Create a unique access token for inputted user
+    """
     @staticmethod
     def create_access_token(data: dict, settings: Settings):
         encoded_jwt = jwt.encode(data, settings.token_key)
         return encoded_jwt
 
+    """
+    Authenticate user login
+    """
     @staticmethod 
     def authenticate(
         db: Session, 
@@ -29,8 +38,6 @@ class auth:
             settings.oauth_android_client_id,
             settings.oauth_web_client_id,
         ]
-        print(requests.Request())
-        print(request.token)
         idinfo = id_token.verify_oauth2_token(request.token, requests.Request()) 
 
         first_name = ""

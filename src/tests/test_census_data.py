@@ -6,9 +6,10 @@ from app.authentication.routers import get_authenticated_user
 
 from app.census_data.routers import router
 from fastapi.testclient import TestClient
-from database import db
 
-# Create a new client for the tests
+"""
+Create a new client for the tests
+"""
 @pytest.fixture
 def test_client():
     app = FastAPI()
@@ -16,7 +17,9 @@ def test_client():
     app.dependency_overrides[get_authenticated_user] = lambda: None
     yield TestClient(app)
 
-# Test that the get sections endpoint works as expected
+"""
+Test that the get sections endpoint works as expected
+"""
 def test_get_group_sections(test_client):
     mock_group = "B04"
     mock_result = [
@@ -31,7 +34,9 @@ def test_get_group_sections(test_client):
 
     assert response.json() == mock_result
 
-# Check that the get census data endpoint works as expected
+"""
+Check that the get census data endpoint works as expected
+"""
 def test_get_census_data(test_client):
     mock_state = "04" 
     mock_county = "025"

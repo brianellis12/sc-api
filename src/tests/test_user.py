@@ -8,7 +8,9 @@ from app.authentication.routers import get_authenticated_user
 from app.user import routers as user_routers
 from database import crud, db
 
-
+"""
+Create a new client for the tests
+"""
 @pytest.fixture
 def test_app():
     app = FastAPI()
@@ -19,12 +21,16 @@ def test_app():
 
     yield TestClient(app)
 
-
+"""
+Faker instance
+"""
 @pytest.fixture
 def fake():
     return Faker()
 
-
+"""
+Fake list of user requests
+"""
 @pytest.fixture
 def fake_request_users(fake):
     request_users = []
@@ -39,7 +45,9 @@ def fake_request_users(fake):
 
     return request_users
 
-
+"""
+Fake list of user responses
+"""
 @pytest.fixture
 def fake_response_users(fake, fake_request_users):
     response_users = []
@@ -55,13 +63,17 @@ def fake_response_users(fake, fake_request_users):
 
     return response_users
 
-
+"""
+Tests the applications root endpoint
+"""
 def test_root(test_app):
     response = test_app.get("/")
     assert response.status_code == 200
     assert response.json() == {"Hello": "World"}
 
-
+"""
+Tests add new user
+"""
 def test_add_user(test_app, fake_request_users, fake_response_users, monkeypatch):
     request_payload = fake_request_users[0]
     response_payload = fake_response_users[0]
@@ -75,7 +87,9 @@ def test_add_user(test_app, fake_request_users, fake_response_users, monkeypatch
     assert response.status_code == 200
     assert response.json() == response_payload
 
-
+"""
+Tests get all users
+"""
 def test_get_users(test_app, fake_response_users, monkeypatch):
     def mock_get_all_users(*args, **kwargs):
         return fake_response_users
@@ -86,7 +100,9 @@ def test_get_users(test_app, fake_response_users, monkeypatch):
     assert response.status_code == 200
     assert response.json() == fake_response_users
 
-
+"""
+Tests get one user
+"""
 def test_get_user(test_app, fake_response_users, monkeypatch):
     response_payload = fake_response_users[1]
 
@@ -99,7 +115,9 @@ def test_get_user(test_app, fake_response_users, monkeypatch):
     assert response.status_code == 200
     assert response.json() == response_payload
 
-
+"""
+Tests update inputted user
+"""
 def test_update_user(test_app, fake_request_users, fake_response_users, monkeypatch):
     request_payload = fake_request_users[2]
     response_payload = fake_response_users[2]

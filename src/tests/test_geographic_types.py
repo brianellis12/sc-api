@@ -5,9 +5,10 @@ from app.authentication.routers import get_authenticated_user
 
 from app.geographic_types.routers import router
 from fastapi.testclient import TestClient
-from database import db
 
-# Create a new client for the test
+"""
+Create a new client for the test
+"""
 @pytest.fixture
 def test_client():
     app = FastAPI()
@@ -15,7 +16,9 @@ def test_client():
     app.dependency_overrides[get_authenticated_user] = lambda: None
     yield TestClient(app)
 
-# Test that the Get Geoid endpoint works as expected
+"""
+Test that the Get Geoid endpoint works as expected
+"""
 def test_get_geoid(test_client):
     mock_latitude = "34.1668741"
     mock_longitude = "-112.4686757"

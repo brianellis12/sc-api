@@ -3,9 +3,13 @@ import requests
 import database.crud as crud
 from sqlalchemy.orm import Session
 
+"""
+Functions to get Geographic Data from external APIs
+"""
 class GeographicTypes:
-
-    # Query the Census Bureau GeoCode API to convert inputted coordinates to required Geographic Types
+    """
+    Query the Census Bureau GeoCode API to convert inputted coordinates to required Geographic Types
+    """
     async def convert_coordinates(latitude: str, longitude: str):
         
         # GeoCode URL Content 
@@ -30,11 +34,15 @@ class GeographicTypes:
                 'tract': result['result']['geographies']['Census Tracts'][0]['TRACT'] }
         
         return data
- 
-class CensusTypes:  
 
-    # Retrieve the Necessary Variables and Labels from the database
-    # Query the Census Bureau API for the Statistics of the retrieved variables 
+"""
+Functions to get Census Data from external APIs
+"""
+class CensusTypes:  
+    """
+    Retrieve the Necessary Variables and Labels from the database
+    Query the Census Bureau API for the Statistics of the retrieved variables
+    """ 
     async def get_census_data(db: Session, state: str, county: str, tract: str, section: str):
         
         data_points = crud.CensusTypes.get_data_points(db, section)
@@ -42,8 +50,6 @@ class CensusTypes:
         labels = data_points['labels']
 
         variables_string = ''.join([str(variable) + ',' for variable in variables])[:-1]
-
-        # more processing to be done cleaning up labels def clean_label()
      
         # Census Variables URL Content
         url = os.environ.get('CENSUS_URL')
