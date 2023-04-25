@@ -14,7 +14,7 @@ class GeographicTypes:
     async def convert_coordinates(latitude: str, longitude: str):
         logging.info(f"Entering convert_coordinates")
         logging.info(f"Converting coordinates {latitude}, {longitude} to GEOID")
-        
+        logging.error(f"Test")
         # GeoCode URL Content 
         geo_params = {
             'y' : longitude,
@@ -49,7 +49,7 @@ class GeographicTypes:
 Functions to get Census Data from external APIs
 """
 class CensusTypes:  
-    """
+    """ 
     Retrieve the Necessary Variables and Labels from the database
     Query the Census Bureau API for the Statistics of the retrieved variables
     """ 
