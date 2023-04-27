@@ -4,6 +4,7 @@
         "fastapi",
         "geotype",
         "pydantic",
+        "rpush",
         "sessionmaker",
         "sqlalchemy"
     ],

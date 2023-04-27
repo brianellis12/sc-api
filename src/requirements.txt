@@ -19,3 +19,5 @@ alembic
 httpx
 firebase_admin
 pg8000
+redis_log_handler
+redis

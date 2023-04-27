@@ -10,6 +10,7 @@ from app.census_data.routers import router as census_data_router
 from app.census_data.schema import CensusVariablesCreate
 from app.user.routers import public as public_user_router, authenticated as authenticated_user_router
 from app.authentication.routers import router as auth_router
+from database.logging import setLogHandler
 
 
 app = FastAPI()
@@ -41,6 +42,7 @@ def init_db():
     crud.user.create(session, user)
 init_db() 
 
+setLogHandler()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
